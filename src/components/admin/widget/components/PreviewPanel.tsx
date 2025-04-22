@@ -53,7 +53,12 @@ const PreviewPanel = ({ config }: PreviewPanelProps) => {
         </Tabs>
       </div>
 
-      <div className="flex-1 relative bg-gray-100 dark:bg-gray-800 rounded-md overflow-hidden flex justify-center">
+      {/* This area in dark mode needs proper border for separation */}
+      <div
+        className="flex-1 relative bg-gray-100 dark:bg-gray-800 rounded-md overflow-hidden flex justify-center border-2 border-gray-300 dark:border-gray-600"
+        style={{ minHeight: "500px" }}
+      >
+        {/* Widget live preview must be in area inside the page */}
         <div
           style={{
             width: getPreviewSize().width,
@@ -79,33 +84,24 @@ const PreviewPanel = ({ config }: PreviewPanelProps) => {
             initialMessage={config.content.welcomeMessage}
             isOpen={true}
             darkMode={config.appearance.darkMode}
-            showReadReceipts={config.messages.showReadReceipts}
-            messageStyle={
-              config.messages.messageStyle as "bubble" | "modern" | "minimal"
-            }
-            enableFeedback={config.messages.enableFeedback}
-            showPreChatForm={config.surveys.showPreChatForm}
-            preChatFormFields={config.surveys.preChatFormFields}
-            showPostChatSurvey={config.surveys.showPostChatSurvey}
-            postChatSurveyQuestions={config.surveys.postChatSurveyQuestions}
           />
         </div>
       </div>
 
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between border-t pt-4 mt-4">
+        <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 p-2 rounded-md">
           <Button
             variant="outline"
             size="sm"
-            className={`text-xs ${!config.appearance.darkMode ? "bg-primary/10" : ""}`}
+            className={`text-xs h-7 ${!config.appearance.darkMode ? "bg-primary/10" : ""}`}
           >
             {config.appearance.darkMode ? "Dark" : "Light"} Theme
           </Button>
-          <Button variant="outline" size="sm" className="text-xs">
+          <Button variant="outline" size="sm" className="text-xs h-7">
             {config.appearance.position}
           </Button>
         </div>
-        <Button variant="outline" size="sm">
+        <Button variant="outline" size="sm" className="h-7">
           Test Chat
         </Button>
       </div>

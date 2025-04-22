@@ -261,6 +261,24 @@ const WidgetConfigurator = ({
           audio: false,
           video: false,
         },
+        enablePrebuiltMessages: false,
+        prebuiltMessages: [
+          {
+            id: "1",
+            text: "Hello, how can I help you today?",
+            triggerType: "button",
+          },
+          {
+            id: "2",
+            text: "I'd like to know more about your services",
+            triggerType: "button",
+          },
+          {
+            id: "3",
+            text: "What are your business hours?",
+            triggerType: "button",
+          },
+        ],
       },
       surveys: {
         showPreChatForm: false,

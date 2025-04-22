@@ -339,6 +339,45 @@ const MessageTab = ({
             </div>
           )}
         </div>
+
+        <Separator />
+
+        {/* Prebuilt Messages */}
+        <div className="space-y-4">
+          <h4 className="text-md font-medium">Prebuilt Messages</h4>
+
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="enablePrebuiltMessages"
+              checked={config.messages.enablePrebuiltMessages}
+              onCheckedChange={(checked) =>
+                handleConfigChange(
+                  "messages",
+                  "enablePrebuiltMessages",
+                  checked,
+                )
+              }
+            />
+            <Label htmlFor="enablePrebuiltMessages">
+              Enable Prebuilt Messages
+            </Label>
+          </div>
+
+          {config.messages.enablePrebuiltMessages && (
+            <div className="space-y-4 pl-6 border-l-2 border-muted">
+              <p className="text-sm text-muted-foreground">
+                Configure prebuilt messages that users can quickly select
+              </p>
+
+              <PrebuiltMessages
+                messages={config.messages.prebuiltMessages || []}
+                onChange={(messages) =>
+                  handleConfigChange("messages", "prebuiltMessages", messages)
+                }
+              />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
