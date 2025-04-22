@@ -130,7 +130,7 @@ const MessageArea = ({
                   </Avatar>
                 )}
                 <div
-                  className={`rounded-lg px-4 py-2 ${message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
+                  className={`${messageStyle === "bubble" ? "rounded-lg" : messageStyle === "modern" ? "rounded-md border border-border/50" : "border-b border-border/30"} px-4 py-2 ${message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}
                 >
                   {message.sender === "ai" && message.format ? (
                     <div
@@ -141,11 +141,96 @@ const MessageArea = ({
                   ) : (
                     <p>{message.content}</p>
                   )}
-                  <div
-                    className={`text-xs mt-1 ${message.sender === "user" ? "text-right text-primary-foreground/70" : "text-muted-foreground"}`}
-                  >
-                    {formatTimestamp(message.timestamp)}
+
+                  {/* Attachments rendering */}
+                  {message.attachments && message.attachments.length > 0 && (
+                    <div className="mt-2 space-y-2">
+                      {message.attachments.map((attachment, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-2 p-2 rounded bg-background/50"
+                        >
+                          {attachment.type === "image" ? (
+                            <img
+                              src={attachment.url}
+                              alt={attachment.name || "Attachment"}
+                              className="max-h-32 rounded"
+                            />
+                          ) : (
+                            <a
+                              href={attachment.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline hover:text-blue-800 flex items-center gap-1"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                              </svg>
+                              {attachment.name || "Download file"}
+                            </a>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="flex justify-between items-center mt-1">
+                    <div
+                      className={`text-xs ${message.sender === "user" ? "text-primary-foreground/70" : "text-muted-foreground"}`}
+                    >
+                      {formatTimestamp(message.timestamp)}
+                    </div>
+
+                    {/* Read receipts */}
+                    {showReadReceipts &&
+                      message.sender === "user" &&
+                      message.isRead && (
+                        <div className="text-xs text-primary-foreground/70">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        </div>
+                      )}
                   </div>
+
+                  {/* Feedback UI for AI messages */}
+                  {enableFeedback && message.sender === "ai" && (
+                    <div className="mt-2 flex items-center gap-1 justify-end">
+                      {[1, 2, 3, 4, 5].map((rating) => (
+                        <button
+                          key={rating}
+                          onClick={() =>
+                            onMessageFeedback(message.id, { rating })
+                          }
+                          className={`w-5 h-5 rounded-full flex items-center justify-center ${message.feedback?.rating === rating ? "bg-primary text-primary-foreground" : "bg-muted-foreground/20 hover:bg-muted-foreground/30"}`}
+                        >
+                          {rating}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

@@ -13,6 +13,9 @@ const ConversationsPage = lazy(
 const AnalyticsPage = lazy(
   () => import("./components/admin/analytics/AnalyticsPage"),
 );
+const WidgetConfigPage = lazy(
+  () => import("./components/admin/widget/WidgetConfigPage"),
+);
 const Login = lazy(() => import("./components/admin/auth/Login"));
 const Register = lazy(() => import("./components/admin/auth/Register"));
 

@@ -22,7 +22,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background">
-      <Card className="w-full max-w-5xl overflow-hidden border-0 shadow-xl rounded-xl">
+      <Card className="w-full max-w-5xl overflow-hidden border-0 shadow-xl rounded-xl dark:bg-gray-800">
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Left Column - Form */}
           <CardContent className="p-8 md:p-12">
