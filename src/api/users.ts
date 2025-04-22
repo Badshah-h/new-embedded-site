@@ -1,70 +1,43 @@
-import { users, User } from "@/mock_data/usersPage";
+import { User } from "@/mock_data/usersPage";
+import { userService } from "@/lib/services";
+
+/**
+ * Users API
+ *
+ * This module provides API endpoints for user-related operations.
+ * It delegates actual data operations to the UserService.
+ */
 
 // Get all users
 export const getAllUsers = async (): Promise<User[]> => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return [...users];
+  return userService.getAllUsers();
 };
 
 // Get user by ID
 export const getUserById = async (id: string): Promise<User | undefined> => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 200));
-  return users.find((user) => user.id === id);
+  return userService.getUserById(id);
 };
 
 // Search users
 export const searchUsers = async (query: string): Promise<User[]> => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-
-  if (!query) return [...users];
-
-  const lowercaseQuery = query.toLowerCase();
-  return users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(lowercaseQuery) ||
-      user.email.toLowerCase().includes(lowercaseQuery),
-  );
+  return userService.searchUsers(query);
 };
 
 // Filter users by status
 export const filterUsersByStatus = async (
   status: User["status"] | "all",
 ): Promise<User[]> => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-
-  if (status === "all") return [...users];
-
-  return users.filter((user) => user.status === status);
+  return userService.filterUsersByStatus(status);
 };
 
 // Filter users by role
 export const filterUsersByRole = async (
   role: User["role"] | "all",
 ): Promise<User[]> => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-
-  if (role === "all") return [...users];
-
-  return users.filter((user) => user.role === role);
+  return userService.filterUsersByRole(role);
 };
 
 // Get user statistics
 export const getUserStats = async () => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 400));
-
-  return {
-    total: users.length,
-    active: users.filter((u) => u.status === "active").length,
-    inactive: users.filter((u) => u.status === "inactive").length,
-    pending: users.filter((u) => u.status === "pending").length,
-    admins: users.filter((u) => u.role === "admin").length,
-    regularUsers: users.filter((u) => u.role === "user").length,
-    guests: users.filter((u) => u.role === "guest").length,
-  };
+  return userService.getUserStats();
 };

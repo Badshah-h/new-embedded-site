@@ -1,104 +1,64 @@
-import {
-  userGrowthData,
-  userEngagementData,
-  userDemographicsData,
-  conversationMetricsData,
-  conversationDurationData,
-  satisfactionDistributionData,
-  aiPerformanceData,
-  modelComparisonData,
-  analyticsOverviewStats,
-} from "@/mock_data/analyticsData";
+import { analyticsService } from "@/lib/services";
+
+/**
+ * Analytics API
+ *
+ * This module provides API endpoints for analytics-related operations.
+ * It delegates actual data operations to the AnalyticsService.
+ */
 
 // Get analytics overview stats
 export const getAnalyticsOverviewStats = async () => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return [...analyticsOverviewStats];
+  return analyticsService.getAnalyticsOverviewStats();
 };
 
 // Get user growth data
 export const getUserGrowthData = async (
   period: "month" | "quarter" | "year" = "year",
 ) => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 400));
-
-  // For simplicity, we're returning the same data regardless of period
-  // In a real implementation, you would filter based on the period
-  return [...userGrowthData];
+  return analyticsService.getUserGrowthData(period);
 };
 
 // Get user engagement data
 export const getUserEngagementData = async () => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return [...userEngagementData];
+  return analyticsService.getUserEngagementData();
 };
 
 // Get user demographics data
 export const getUserDemographicsData = async () => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return [...userDemographicsData];
+  return analyticsService.getUserDemographicsData();
 };
 
 // Get conversation metrics data
 export const getConversationMetricsData = async (
   period: "month" | "quarter" | "year" = "year",
 ) => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 400));
-
-  // For simplicity, we're returning the same data regardless of period
-  return [...conversationMetricsData];
+  return analyticsService.getConversationMetricsData(period);
 };
 
 // Get conversation duration data
 export const getConversationDurationData = async () => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return [...conversationDurationData];
+  return analyticsService.getConversationDurationData();
 };
 
 // Get satisfaction distribution data
 export const getSatisfactionDistributionData = async () => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return [...satisfactionDistributionData];
+  return analyticsService.getSatisfactionDistributionData();
 };
 
 // Get AI performance data
 export const getAIPerformanceData = async (
   period: "month" | "quarter" | "year" = "year",
 ) => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 400));
-
-  // For simplicity, we're returning the same data regardless of period
-  return [...aiPerformanceData];
+  return analyticsService.getAIPerformanceData(period);
 };
 
 // Get model comparison data
 export const getModelComparisonData = async () => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  return [...modelComparisonData];
+  return analyticsService.getModelComparisonData();
 };
 
 // Get analytics summary
 export const getAnalyticsSummary = async () => {
-  // Simulate API delay
-  await new Promise((resolve) => setTimeout(resolve, 600));
-
-  return {
-    totalConversations: 52600,
-    averageResponseTime: "0.8s",
-    userSatisfaction: 4.3,
-    aiAccuracy: "94.2%",
-    activeUsers: 4500,
-    topQuery: "How do I reset my password?",
-    bestPerformingModel: "Gemini Pro",
-    lastUpdated: new Date().toISOString(),
-  };
+  return analyticsService.getAnalyticsSummary();
 };
