@@ -124,6 +124,27 @@ const WidgetConfigurator = ({
 
           <TabsContent value="appearance" className="space-y-4">
             <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="template">Template</Label>
+                <Select
+                  value={config.appearance.template}
+                  onValueChange={(value) =>
+                    handleConfigChange("appearance", "template", value)
+                  }
+                >
+                  <SelectTrigger id="template">
+                    <SelectValue placeholder="Select template" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="modern">Modern Clean</SelectItem>
+                    <SelectItem value="glass">Glass Effect</SelectItem>
+                    <SelectItem value="dark">Dark Mode</SelectItem>
+                    <SelectItem value="rounded">Soft Rounded</SelectItem>
+                    <SelectItem value="minimal">Minimalist</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="primaryColor">Primary Color</Label>
@@ -481,6 +502,18 @@ const WidgetConfigurator = ({
           </TabsContent>
 
           <TabsContent value="ai" className="space-y-4">
+            <div className="flex justify-between items-center">
+              <h3 className="text-lg font-medium">AI Settings</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => resetSection("ai")}
+                className="flex items-center gap-1"
+              >
+                <RefreshCw className="h-3 w-3" />
+                Reset
+              </Button>
+            </div>
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="model">AI Model</Label>
@@ -609,12 +642,55 @@ const WidgetConfigurator = ({
           </div>
 
           <div className="flex justify-end space-x-2">
-            <Button variant="outline">Reset</Button>
+            <Button
+              variant="outline"
+              onClick={() => {
+                Object.keys(config).forEach((section) => resetSection(section));
+              }}
+            >
+              Reset All
+            </Button>
             <Button>Save Configuration</Button>
           </div>
         </div>
       </CardContent>
     </Card>
+    
+    {showPreview && (
+      <div className="w-full lg:w-1/2 flex flex-col">
+        <Card className="w-full h-full bg-background border-border">
+          <CardHeader>
+            <CardTitle className="text-xl font-bold">Live Preview</CardTitle>
+            <CardDescription>
+              See how your widget will appear to users
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="flex-1 relative min-h-[500px] bg-gray-100 dark:bg-gray-800 rounded-md p-0 overflow-hidden">
+            <div className="absolute inset-0 grid place-items-center">
+              <div className="w-full h-full relative">
+                <ChatWidget 
+                  title={config.content.botName}
+                  subtitle="Ask me anything!"
+                  primaryColor={config.appearance.primaryColor}
+                  secondaryColor={config.appearance.secondaryColor}
+                  position={config.appearance.position as "bottom-right" | "bottom-left" | "top-right" | "top-left"}
+                  logoUrl={config.appearance.logo}
+                  initialMessage={config.content.welcomeMessage}
+                  isOpen={true}
+                  darkMode={config.appearance.darkMode}
+                />
+              </div>
+            </div>
+          </CardContent>
+          <CardFooter className="flex justify-between">
+            <p className="text-sm text-muted-foreground">
+              This preview shows how your widget will appear when embedded on a website.
+            </p>
+          </CardFooter>
+        </Card>
+      </div>
+    )}
+  </div>
   );
 };
 
