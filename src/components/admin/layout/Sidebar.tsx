@@ -61,6 +61,12 @@ const Sidebar = ({
       path: "/admin/conversations",
       active: location.pathname === "/admin/conversations",
     },
+    {
+      title: "Widget Config",
+      icon: Settings,
+      path: "/admin/widget-config",
+      active: location.pathname === "/admin/widget-config",
+    },
   ];
 
   const bottomNavItems = [

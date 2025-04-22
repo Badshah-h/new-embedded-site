@@ -40,6 +40,7 @@ function App() {
             <Route path="users" element={<UsersPage />} />
             <Route path="conversations" element={<ConversationsPage />} />
             <Route path="analytics" element={<AnalyticsPage />} />
+            <Route path="widget-config" element={<WidgetConfigPage />} />
             {/* Add more admin routes as needed */}
           </Route>
         </Routes>

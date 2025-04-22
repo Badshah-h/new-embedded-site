@@ -6,6 +6,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,7 +22,6 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { ColorSwatch } from "@/components/ui/color-swatch";
 import {
   Copy,
   Code,
@@ -30,8 +30,9 @@ import {
   MessageSquare,
   Database,
   Zap,
+  RefreshCw,
 } from "lucide-react";
-
+import ChatWidget from "../chat/ChatWidget";
 interface WidgetConfiguratorProps {
   onConfigChange?: (config: any) => void;
 }
@@ -39,8 +40,10 @@ interface WidgetConfiguratorProps {
 const WidgetConfigurator = ({
   onConfigChange = () => {},
 }: WidgetConfiguratorProps) => {
+  const [showPreview, setShowPreview] = useState(true);
   const [config, setConfig] = useState({
     appearance: {
+      template: "modern",
       primaryColor: "#7C3AED",
       secondaryColor: "#E9D5FF",
       fontFamily: "Inter",
@@ -91,6 +94,57 @@ const WidgetConfigurator = ({
 
   const generateEmbedCode = () => {
     return `<script src="https://widget.example.com/loader.js" data-widget-id="unique-id" data-config='${JSON.stringify(config)}'></script>`;
+  };
+
+  const resetSection = (section: string) => {
+    // Default values for each section
+    const defaultValues: Record<string, any> = {
+      appearance: {
+        template: "modern",
+        primaryColor: "#7C3AED",
+        secondaryColor: "#E9D5FF",
+        fontFamily: "Inter",
+        borderRadius: 8,
+        position: "bottom-right",
+        width: 350,
+        height: 500,
+        darkMode: false,
+        logo: "https://api.dicebear.com/7.x/avataaars/svg?seed=widget",
+        customCSS: "",
+      },
+      behavior: {
+        autoOpen: false,
+        autoOpenDelay: 5,
+        autoOpenTrigger: "time",
+        showNotifications: true,
+        soundEffects: false,
+        persistConversation: true,
+      },
+      content: {
+        welcomeMessage: "Hello! How can I help you today?",
+        botName: "AI Assistant",
+        inputPlaceholder: "Type your message...",
+        offlineMessage: "Sorry, I'm currently offline. Please try again later.",
+      },
+      ai: {
+        model: "gemini-pro",
+        temperature: 0.7,
+        maxTokens: 1024,
+        knowledgeBase: true,
+        responseFormat: "markdown",
+        systemPrompt:
+          "You are a helpful assistant that provides concise and accurate information.",
+      },
+    };
+
+    // Update the config with default values for the specified section
+    const newConfig = {
+      ...config,
+      [section]: defaultValues[section],
+    };
+
+    setConfig(newConfig);
+    onConfigChange(newConfig);
   };
 
   return (
@@ -650,47 +704,59 @@ const WidgetConfigurator = ({
             >
               Reset All
             </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowPreview(!showPreview)}
+            >
+              {showPreview ? "Hide Preview" : "Show Preview"}
+            </Button>
             <Button>Save Configuration</Button>
           </div>
         </div>
       </CardContent>
-    </Card>
-    
-    {showPreview && (
-      <div className="w-full lg:w-1/2 flex flex-col">
-        <Card className="w-full h-full bg-background border-border">
-          <CardHeader>
-            <CardTitle className="text-xl font-bold">Live Preview</CardTitle>
-            <CardDescription>
-              See how your widget will appear to users
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="flex-1 relative min-h-[500px] bg-gray-100 dark:bg-gray-800 rounded-md p-0 overflow-hidden">
-            <div className="absolute inset-0 grid place-items-center">
-              <div className="w-full h-full relative">
-                <ChatWidget 
-                  title={config.content.botName}
-                  subtitle="Ask me anything!"
-                  primaryColor={config.appearance.primaryColor}
-                  secondaryColor={config.appearance.secondaryColor}
-                  position={config.appearance.position as "bottom-right" | "bottom-left" | "top-right" | "top-left"}
-                  logoUrl={config.appearance.logo}
-                  initialMessage={config.content.welcomeMessage}
-                  isOpen={true}
-                  darkMode={config.appearance.darkMode}
-                />
+
+      {showPreview && (
+        <div className="w-full lg:w-1/2 flex flex-col">
+          <Card className="w-full h-full bg-background border-border">
+            <CardHeader>
+              <CardTitle className="text-xl font-bold">Live Preview</CardTitle>
+              <CardDescription>
+                See how your widget will appear to users
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="flex-1 relative min-h-[500px] bg-gray-100 dark:bg-gray-800 rounded-md p-0 overflow-hidden">
+              <div className="absolute inset-0 grid place-items-center">
+                <div className="w-full h-full relative">
+                  <ChatWidget
+                    title={config.content.botName}
+                    subtitle="Ask me anything!"
+                    primaryColor={config.appearance.primaryColor}
+                    secondaryColor={config.appearance.secondaryColor}
+                    position={
+                      config.appearance.position as
+                        | "bottom-right"
+                        | "bottom-left"
+                        | "top-right"
+                        | "top-left"
+                    }
+                    logoUrl={config.appearance.logo}
+                    initialMessage={config.content.welcomeMessage}
+                    isOpen={true}
+                    darkMode={config.appearance.darkMode}
+                  />
+                </div>
               </div>
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-between">
-            <p className="text-sm text-muted-foreground">
-              This preview shows how your widget will appear when embedded on a website.
-            </p>
-          </CardFooter>
-        </Card>
-      </div>
-    )}
-  </div>
+            </CardContent>
+            <CardFooter className="flex justify-between">
+              <p className="text-sm text-muted-foreground">
+                This preview shows how your widget will appear when embedded on
+                a website.
+              </p>
+            </CardFooter>
+          </Card>
+        </div>
+      )}
+    </Card>
   );
 };
 

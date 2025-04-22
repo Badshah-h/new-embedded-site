@@ -22,13 +22,13 @@ interface RecentActivityCardProps {
 const RecentActivityCard = ({ onViewAll }: RecentActivityCardProps) => {
   const [activityFilter, setActivityFilter] = useState("all");
   const [selectedActivity, setSelectedActivity] = useState<string | null>(null);
-  const { recentActivities, isLoading } = useDashboard();
+  const { activities, isLoading } = useDashboard();
 
   // Filter activities based on selected filter
-  const activities =
+  const filteredActivities =
     activityFilter === "all"
-      ? recentActivities
-      : recentActivities.filter((activity) => activity.type === activityFilter);
+      ? activities
+      : activities.filter((activity) => activity.type === activityFilter);
 
   const handleActivityClick = (id: string) => {
     setSelectedActivity(id);
@@ -77,7 +77,7 @@ const RecentActivityCard = ({ onViewAll }: RecentActivityCardProps) => {
               Loading activities...
             </div>
           ) : (
-            activities.map((activity, index) => (
+            filteredActivities.map((activity, index) => (
               <motion.div
                 key={activity.id}
                 initial={{ opacity: 0, x: -20 }}
@@ -134,7 +134,7 @@ const RecentActivityCard = ({ onViewAll }: RecentActivityCardProps) => {
             ))
           )}
 
-          {activities.length === 0 && (
+          {filteredActivities.length === 0 && (
             <div className="text-center py-4 text-muted-foreground">
               No activities matching the selected filter
             </div>

@@ -1,156 +1,127 @@
-import React from "react";
+import React, { useState } from "react";
 import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  ArrowUpRight,
-  MessageSquare,
-  Users,
-  Zap,
-  Settings,
-  Plus,
-  Upload,
-  BarChart3,
-  Bot,
-} from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { ArrowUpRight, Search } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import GlassCard from "./GlassCard";
+import { useDashboard } from "@/api/hooks";
 
-const QuickActionsCard = () => {
-  const primaryActions = [
-    {
-      icon: Users,
-      label: "Manage Users",
-      color: "from-blue-500 to-blue-600",
-      href: "/admin/users",
-    },
-    {
-      icon: MessageSquare,
-      label: "View Chats",
-      color: "from-indigo-500 to-indigo-600",
-      href: "/admin/conversations",
-    },
-    {
-      icon: Zap,
-      label: "AI Settings",
-      color: "from-purple-500 to-purple-600",
-      href: "/admin/settings",
-    },
-    {
-      icon: Settings,
-      label: "Configure Widget",
-      color: "from-pink-500 to-pink-600",
-      href: "/admin/widget",
-    },
-  ];
+interface TopQueriesCardProps {
+  onViewDetails?: () => void;
+}
 
-  const secondaryActions = [
-    { icon: Plus, label: "New Knowledge Base", href: "/admin/knowledge" },
-    { icon: Upload, label: "Import Data", href: "/admin/import" },
-    { icon: BarChart3, label: "Analytics", href: "/admin/analytics" },
-    { icon: Bot, label: "Train AI", href: "/admin/training" },
-  ];
+const TopQueriesCard = ({ onViewDetails }: TopQueriesCardProps) => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedQuery, setSelectedQuery] = useState<string | null>(null);
+  const { queries, isLoading } = useDashboard();
 
-  const handleActionClick = (href: string) => {
-    window.location.href = href;
+  // Filter queries based on search
+  const filteredQueries = queries
+    .filter((q) => q.query.toLowerCase().includes(searchQuery.toLowerCase()))
+    .slice(0, 5);
+
+  // Calculate max count for visualization
+  const maxCount =
+    filteredQueries.length > 0
+      ? Math.max(...filteredQueries.map((q) => q.count))
+      : 0;
+
+  const handleQueryClick = (query: string) => {
+    setSelectedQuery(query);
+    // Could show more details about this specific query
+    if (onViewDetails) onViewDetails();
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Use filtered queries for display
+  const displayQueries = filteredQueries;
+
   return (
-    <GlassCard delay={0.5}>
-      <CardHeader>
+    <GlassCard delay={0.3}>
+      <CardHeader className="pb-3">
         <div className="flex justify-between items-center">
-          <CardTitle>Quick Actions</CardTitle>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="flex items-center text-sm text-primary cursor-pointer"
-                >
-                  <span>More</span>
-                  <ArrowUpRight className="ml-1 h-4 w-4" />
-                </motion.div>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>View all available actions</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <CardTitle>Top Queries</CardTitle>
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex items-center text-sm text-primary cursor-pointer"
+            onClick={onViewDetails}
+          >
+            <span>View All</span>
+            <ArrowUpRight className="ml-1 h-4 w-4" />
+          </motion.div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            {primaryActions.map((action, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{
-                  duration: 0.5,
-                  delay: 0.6 + index * 0.1,
-                  ease: [0.22, 1, 0.36, 1],
-                }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button
-                  className="w-full justify-start h-auto py-3 group relative overflow-hidden"
-                  variant="outline"
-                  onClick={() => handleActionClick(action.href)}
-                >
-                  <div
-                    className={`absolute inset-0 bg-gradient-to-r ${action.color} opacity-0 group-hover:opacity-10 transition-opacity`}
-                  ></div>
-                  <div className="flex items-center">
-                    <div
-                      className={`flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r ${action.color} text-white mr-3`}
-                    >
-                      <action.icon className="h-4 w-4" />
-                    </div>
-                    <span>{action.label}</span>
-                  </div>
-                </Button>
-              </motion.div>
-            ))}
-          </div>
+        <div className="relative mb-4">
+          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search queries..."
+            className="pl-8"
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+        </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            {secondaryActions.map((action, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.3,
-                  delay: 0.8 + index * 0.1,
-                  ease: "easeOut",
-                }}
-                whileHover={{ y: -2 }}
-                whileTap={{ y: 0 }}
-              >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="w-full justify-start text-muted-foreground hover:text-foreground"
-                  onClick={() => handleActionClick(action.href)}
+        <div className="space-y-4">
+          {isLoading ? (
+            <div className="text-center py-4 text-muted-foreground">
+              Loading queries...
+            </div>
+          ) : displayQueries.length > 0 ? (
+            displayQueries.map((item, index) => {
+              const percentage = (item.count / maxCount) * 100;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.4 + index * 0.1,
+                    ease: "easeOut",
+                  }}
+                  className="relative group cursor-pointer"
+                  onClick={() => handleQueryClick(item.query)}
+                  whileHover={{ x: 5 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  <action.icon className="mr-2 h-4 w-4" />
-                  {action.label}
-                </Button>
-              </motion.div>
-            ))}
-          </div>
+                  <div className="flex items-center justify-between space-x-4 transition-all hover:bg-muted/50 p-2 rounded-md relative z-10">
+                    <div className="space-y-1 z-10 relative">
+                      <p className="text-sm font-medium leading-none group-hover:text-primary transition-colors">
+                        {item.query}
+                      </p>
+                    </div>
+                    <Badge variant="secondary" className="z-10 relative">
+                      {item.count}
+                    </Badge>
+                  </div>
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${percentage}%` }}
+                    transition={{
+                      duration: 1,
+                      delay: 0.6 + index * 0.1,
+                      ease: "easeOut",
+                    }}
+                    className="absolute left-0 top-0 h-full bg-primary/10 rounded-md"
+                  />
+                </motion.div>
+              );
+            })
+          ) : (
+            <div className="text-center py-4 text-muted-foreground">
+              No queries matching your search
+            </div>
+          )}
         </div>
       </CardContent>
     </GlassCard>
   );
 };
 
-export default QuickActionsCard;
+export default TopQueriesCard;
