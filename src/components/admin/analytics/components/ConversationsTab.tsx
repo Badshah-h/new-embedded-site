@@ -3,6 +3,8 @@ import { LineChart, BarChart3, PieChart } from "lucide-react";
 import ChartCard from "./ChartCard";
 
 const ConversationsTab = () => {
+  const { conversationMetricsData, conversationDurationData, isLoading } =
+    useAnalytics();
   return (
     <div className="space-y-6">
       <div className="grid gap-6 md:grid-cols-2">

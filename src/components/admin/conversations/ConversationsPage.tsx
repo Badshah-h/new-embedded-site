@@ -33,11 +33,13 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { Conversation, conversations } from "@/mock_data/conversationsPage";
+import { useConversations } from "@/api/hooks";
+import { Conversation } from "@/mock_data/conversationsPage";
 
 const ConversationsPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const { conversations, stats, isLoading } = useConversations();
 
   // Filter conversations based on search query
   const filteredConversations = conversations.filter(
@@ -144,68 +146,84 @@ const ConversationsPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredConversations.map((conversation) => (
-                  <TableRow key={conversation.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar>
-                          <AvatarImage
-                            src={conversation.user.avatar}
-                            alt={conversation.user.name}
-                          />
-                          <AvatarFallback>
-                            {conversation.user.name.substring(0, 2)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium">
-                            {conversation.user.name}
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            {conversation.user.email}
-                          </div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <StatusBadge status={conversation.status} />
-                    </TableCell>
-                    <TableCell>{conversation.messages}</TableCell>
-                    <TableCell>{conversation.duration}</TableCell>
-                    <TableCell>
-                      <SatisfactionRating rating={conversation.satisfaction} />
-                    </TableCell>
-                    <TableCell className="max-w-[200px] truncate">
-                      {conversation.lastMessage}
-                    </TableCell>
-                    <TableCell>{conversation.timestamp}</TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>
-                            <Eye className="mr-2 h-4 w-4" />
-                            View conversation
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>View user profile</DropdownMenuItem>
-                          <DropdownMenuItem>Export transcript</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete conversation
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={8}
+                      className="h-24 text-center text-muted-foreground"
+                    >
+                      Loading conversations...
                     </TableCell>
                   </TableRow>
-                ))}
-                {filteredConversations.length === 0 && (
+                ) : filteredConversations.length > 0 ? (
+                  filteredConversations.map((conversation) => (
+                    <TableRow key={conversation.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar>
+                            <AvatarImage
+                              src={conversation.user.avatar}
+                              alt={conversation.user.name}
+                            />
+                            <AvatarFallback>
+                              {conversation.user.name.substring(0, 2)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="font-medium">
+                              {conversation.user.name}
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                              {conversation.user.email}
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={conversation.status} />
+                      </TableCell>
+                      <TableCell>{conversation.messages}</TableCell>
+                      <TableCell>{conversation.duration}</TableCell>
+                      <TableCell>
+                        <SatisfactionRating
+                          rating={conversation.satisfaction}
+                        />
+                      </TableCell>
+                      <TableCell className="max-w-[200px] truncate">
+                        {conversation.lastMessage}
+                      </TableCell>
+                      <TableCell>{conversation.timestamp}</TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Open menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>
+                              <Eye className="mr-2 h-4 w-4" />
+                              View conversation
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              View user profile
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>
+                              Export transcript
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-destructive">
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete conversation
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
                   <TableRow>
                     <TableCell
                       colSpan={8}

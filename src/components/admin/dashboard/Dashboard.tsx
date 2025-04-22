@@ -55,10 +55,10 @@ const Dashboard = () => {
   // Handle refresh click with animation
   const handleRefresh = () => {
     setIsRefreshing(true);
-    // Simulate data refresh
-    setTimeout(() => {
+    // Refresh data using the API
+    refreshData().then(() => {
       setIsRefreshing(false);
-    }, 1000);
+    });
   };
 
   // Open detailed view

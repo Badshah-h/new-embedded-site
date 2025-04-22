@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAnalytics } from "@/api/hooks";
 
 // Import modular components
 import AnalyticsHeader from "./components/AnalyticsHeader";
@@ -11,6 +12,7 @@ import AIPerformanceTab from "./components/AIPerformanceTab";
 const AnalyticsPage = () => {
   const [timeRange, setTimeRange] = useState("7d");
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const { setTimeFilter } = useAnalytics();
 
   // Set initial dark mode based on system preference
   useEffect(() => {
@@ -27,11 +29,17 @@ const AnalyticsPage = () => {
     document.documentElement.classList.toggle("dark");
   };
 
+  // Handle time range change
+  const handleTimeRangeChange = (value: string) => {
+    setTimeRange(value);
+    setTimeFilter(value);
+  };
+
   return (
     <div className="space-y-6">
       <AnalyticsHeader
         timeRange={timeRange}
-        setTimeRange={setTimeRange}
+        setTimeRange={handleTimeRangeChange}
         isDarkMode={isDarkMode}
         toggleDarkMode={toggleDarkMode}
       />

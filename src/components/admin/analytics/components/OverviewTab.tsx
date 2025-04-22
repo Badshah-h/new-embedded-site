@@ -2,44 +2,24 @@ import React from "react";
 import { LineChart, BarChart3, PieChart } from "lucide-react";
 import StatCard from "./StatCard";
 import ChartCard from "./ChartCard";
+import { useAnalytics } from "@/api/hooks";
 
 const OverviewTab = () => {
-  const stats = [
-    {
-      title: "Total Conversations",
-      value: "8,642",
-      change: "+12.5%",
-      positive: true,
-      progress: 78,
-    },
-    {
-      title: "Active Users",
-      value: "2,845",
-      change: "+8.2%",
-      positive: true,
-      progress: 65,
-    },
-    {
-      title: "Avg. Response Time",
-      value: "1.2s",
-      change: "-0.3s",
-      positive: true,
-      progress: 92,
-    },
-    {
-      title: "User Satisfaction",
-      value: "4.7/5",
-      change: "+0.2",
-      positive: true,
-      progress: 94,
-    },
-  ];
+  const {
+    overviewStats,
+    conversationVolumeData,
+    userGrowthData,
+    conversationDurationData,
+    userSatisfactionData,
+    aiModelUsageData,
+    isLoading,
+  } = useAnalytics();
 
   return (
     <div className="space-y-6">
       {/* Overview Stats */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, index) => (
+        {overviewStats.map((stat, index) => (
           <StatCard key={index} {...stat} />
         ))}
       </div>
@@ -50,11 +30,15 @@ const OverviewTab = () => {
           title="Conversation Volume"
           icon={LineChart}
           description="Conversation volume chart would appear here"
+          isLoading={isLoading}
+          data={conversationVolumeData}
         />
         <ChartCard
           title="User Growth"
           icon={BarChart3}
           description="User growth chart would appear here"
+          isLoading={isLoading}
+          data={userGrowthData}
         />
       </div>
 
@@ -65,18 +49,24 @@ const OverviewTab = () => {
           icon={BarChart3}
           height={200}
           description="Duration distribution chart"
+          isLoading={isLoading}
+          data={conversationDurationData}
         />
         <ChartCard
           title="User Satisfaction"
           icon={PieChart}
           height={200}
           description="Satisfaction rating distribution"
+          isLoading={isLoading}
+          data={userSatisfactionData}
         />
         <ChartCard
           title="AI Model Usage"
           icon={PieChart}
           height={200}
           description="AI model distribution chart"
+          isLoading={isLoading}
+          data={aiModelUsageData}
         />
       </div>
     </div>

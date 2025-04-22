@@ -26,11 +26,11 @@ import {
   Download,
   Filter,
   MoreHorizontal,
-  Plus,
   Search,
   Trash2,
   UserPlus,
 } from "lucide-react";
+import { useUsers } from "@/api/hooks";
 
 interface User {
   id: string;
@@ -47,80 +47,7 @@ const UsersPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
-
-  // Mock data
-  const users: User[] = [
-    {
-      id: "1",
-      name: "Sarah Johnson",
-      email: "sarah.johnson@example.com",
-      status: "active",
-      role: "admin",
-      lastActive: "2 minutes ago",
-      conversations: 152,
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-    },
-    {
-      id: "2",
-      name: "Michael Chen",
-      email: "michael.chen@example.com",
-      status: "active",
-      role: "user",
-      lastActive: "15 minutes ago",
-      conversations: 87,
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-    },
-    {
-      id: "3",
-      name: "Emily Rodriguez",
-      email: "emily.rodriguez@example.com",
-      status: "active",
-      role: "user",
-      lastActive: "3 hours ago",
-      conversations: 64,
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
-    },
-    {
-      id: "4",
-      name: "David Kim",
-      email: "david.kim@example.com",
-      status: "inactive",
-      role: "user",
-      lastActive: "2 days ago",
-      conversations: 23,
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-    },
-    {
-      id: "5",
-      name: "Jessica Taylor",
-      email: "jessica.taylor@example.com",
-      status: "pending",
-      role: "guest",
-      lastActive: "Never",
-      conversations: 0,
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Jessica",
-    },
-    {
-      id: "6",
-      name: "Robert Wilson",
-      email: "robert.wilson@example.com",
-      status: "active",
-      role: "user",
-      lastActive: "1 hour ago",
-      conversations: 42,
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Robert",
-    },
-    {
-      id: "7",
-      name: "Amanda Martinez",
-      email: "amanda.martinez@example.com",
-      status: "active",
-      role: "user",
-      lastActive: "5 hours ago",
-      conversations: 31,
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Amanda",
-    },
-  ];
+  const { users, stats, isLoading } = useUsers();
 
   // Filter users based on search query
   const filteredUsers = users.filter(
@@ -234,66 +161,76 @@ const UsersPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredUsers.map((user) => (
-                  <TableRow key={user.id}>
-                    <TableCell>
-                      <div className="flex items-center">
-                        <input
-                          type="checkbox"
-                          className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                          checked={selectedUsers.includes(user.id)}
-                          onChange={() => toggleUserSelection(user.id)}
-                        />
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-3">
-                        <Avatar>
-                          <AvatarImage src={user.avatar} alt={user.name} />
-                          <AvatarFallback>
-                            {user.name.substring(0, 2)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="font-medium">{user.name}</div>
-                          <div className="text-sm text-muted-foreground">
-                            {user.email}
-                          </div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <StatusBadge status={user.status} />
-                    </TableCell>
-                    <TableCell className="capitalize">{user.role}</TableCell>
-                    <TableCell>{user.lastActive}</TableCell>
-                    <TableCell>{user.conversations}</TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Open menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>View profile</DropdownMenuItem>
-                          <DropdownMenuItem>
-                            View conversations
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>Edit user</DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete user
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={7}
+                      className="h-24 text-center text-muted-foreground"
+                    >
+                      Loading users...
                     </TableCell>
                   </TableRow>
-                ))}
-                {filteredUsers.length === 0 && (
+                ) : filteredUsers.length > 0 ? (
+                  filteredUsers.map((user) => (
+                    <TableRow key={user.id}>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <input
+                            type="checkbox"
+                            className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                            checked={selectedUsers.includes(user.id)}
+                            onChange={() => toggleUserSelection(user.id)}
+                          />
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-3">
+                          <Avatar>
+                            <AvatarImage src={user.avatar} alt={user.name} />
+                            <AvatarFallback>
+                              {user.name.substring(0, 2)}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <div className="font-medium">{user.name}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {user.email}
+                            </div>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <StatusBadge status={user.status} />
+                      </TableCell>
+                      <TableCell className="capitalize">{user.role}</TableCell>
+                      <TableCell>{user.lastActive}</TableCell>
+                      <TableCell>{user.conversations}</TableCell>
+                      <TableCell className="text-right">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreHorizontal className="h-4 w-4" />
+                              <span className="sr-only">Open menu</span>
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                            <DropdownMenuItem>View profile</DropdownMenuItem>
+                            <DropdownMenuItem>
+                              View conversations
+                            </DropdownMenuItem>
+                            <DropdownMenuItem>Edit user</DropdownMenuItem>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem className="text-destructive">
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete user
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
                   <TableRow>
                     <TableCell
                       colSpan={7}
@@ -312,7 +249,10 @@ const UsersPage = () => {
             <div className="text-sm text-muted-foreground">
               Showing <span className="font-medium">1</span> to{" "}
               <span className="font-medium">{filteredUsers.length}</span> of{" "}
-              <span className="font-medium">{users.length}</span> users
+              <span className="font-medium">
+                {stats?.total || users.length}
+              </span>{" "}
+              users
             </div>
             <div className="flex items-center space-x-2">
               <Button

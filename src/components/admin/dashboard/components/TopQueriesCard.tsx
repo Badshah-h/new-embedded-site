@@ -5,11 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import GlassCard from "./GlassCard";
-
-interface QueryItem {
-  query: string;
-  count: number;
-}
+import { useDashboard } from "@/api/hooks";
 
 interface TopQueriesCardProps {
   onViewDetails?: () => void;
@@ -18,31 +14,29 @@ interface TopQueriesCardProps {
 const TopQueriesCard = ({ onViewDetails }: TopQueriesCardProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedQuery, setSelectedQuery] = useState<string | null>(null);
-
-  const allQueries: QueryItem[] = [
-    { query: "How do I reset my password?", count: 342 },
-    { query: "What are your business hours?", count: 271 },
-    { query: "How to upgrade my subscription?", count: 234 },
-    { query: "Where is my order?", count: 198 },
-    { query: "How to contact support?", count: 157 },
-    { query: "Do you offer refunds?", count: 143 },
-    { query: "How to change my email?", count: 128 },
-    { query: "What payment methods do you accept?", count: 112 },
-  ];
+  const { topQueries, isLoading } = useDashboard();
 
   // Filter queries based on search
-  const queries = allQueries
+  const queries = topQueries
     .filter((q) => q.query.toLowerCase().includes(searchQuery.toLowerCase()))
     .slice(0, 5);
 
   // Calculate max count for visualization
-  const maxCount = Math.max(...queries.map((q) => q.count));
+  const maxCount =
+    queries.length > 0 ? Math.max(...queries.map((q) => q.count)) : 0;
 
   const handleQueryClick = (query: string) => {
     setSelectedQuery(query);
     // Could show more details about this specific query
     if (onViewDetails) onViewDetails();
   };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  // Display queries based on search results
+  const displayQueries = queries;
 
   return (
     <GlassCard delay={0.3}>
@@ -67,13 +61,17 @@ const TopQueriesCard = ({ onViewDetails }: TopQueriesCardProps) => {
             placeholder="Search queries..."
             className="pl-8"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
           />
         </div>
 
         <div className="space-y-4">
-          {queries.length > 0 ? (
-            queries.map((item, index) => {
+          {isLoading ? (
+            <div className="text-center py-4 text-muted-foreground">
+              Loading queries...
+            </div>
+          ) : displayQueries.length > 0 ? (
+            displayQueries.map((item, index) => {
               const percentage = (item.count / maxCount) * 100;
               return (
                 <motion.div
