@@ -26,8 +26,18 @@ const EmbedCodeGenerator = ({ config }: EmbedCodeGeneratorProps) => {
   };
 
   const generateIframeCode = () => {
+    // Create a sanitized config object with only the necessary properties
+    const sanitizedConfig = {
+      appearance: { ...config.appearance },
+      behavior: { ...config.behavior },
+      content: { ...config.content },
+      messages: { ...config.messages },
+      ai: { ...config.ai },
+      surveys: config.surveys ? { ...config.surveys } : undefined,
+    };
+
     return `<iframe 
-  src="https://widget.example.com/embed?config=${encodeURIComponent(JSON.stringify(config))}" 
+  src="https://widget.example.com/embed?config=${encodeURIComponent(JSON.stringify(sanitizedConfig))}" 
   width="100%" 
   height="600px" 
   frameborder="0" 

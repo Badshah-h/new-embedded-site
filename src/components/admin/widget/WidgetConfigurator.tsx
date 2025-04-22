@@ -18,6 +18,8 @@ import {
   RefreshCw,
   Save,
   Download,
+  MessageCircle,
+  ClipboardList,
 } from "lucide-react";
 
 import {
@@ -399,6 +401,20 @@ const WidgetConfigurator = ({
                   <MessageSquare className="h-4 w-4" />
                   <span className="hidden sm:inline">Content</span>
                 </TabsTrigger>
+                <TabsTrigger
+                  value="messages"
+                  className="flex items-center gap-1"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  <span className="hidden sm:inline">Messages</span>
+                </TabsTrigger>
+                <TabsTrigger
+                  value="surveys"
+                  className="flex items-center gap-1"
+                >
+                  <ClipboardList className="h-4 w-4" />
+                  <span className="hidden sm:inline">Surveys</span>
+                </TabsTrigger>
                 <TabsTrigger value="ai" className="flex items-center gap-1">
                   <Zap className="h-4 w-4" />
                   <span className="hidden sm:inline">AI</span>
@@ -422,6 +438,22 @@ const WidgetConfigurator = ({
               </TabsContent>
 
               <TabsContent value="content">
+                <ContentTab
+                  config={config}
+                  handleConfigChange={handleConfigChange}
+                  resetSection={resetSection}
+                />
+              </TabsContent>
+
+              <TabsContent value="messages">
+                <ContentTab
+                  config={config}
+                  handleConfigChange={handleConfigChange}
+                  resetSection={resetSection}
+                />
+              </TabsContent>
+
+              <TabsContent value="surveys">
                 <ContentTab
                   config={config}
                   handleConfigChange={handleConfigChange}

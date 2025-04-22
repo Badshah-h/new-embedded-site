@@ -70,7 +70,7 @@ const PreviewPanel = ({ config }: PreviewPanelProps) => {
         >
           <ChatWidget
             title={config.content.botName}
-            subtitle="Ask me anything!"
+            subtitle={config.content.inputPlaceholder || "Ask me anything!"}
             primaryColor={config.appearance.primaryColor}
             secondaryColor={config.appearance.secondaryColor}
             position={
@@ -84,6 +84,21 @@ const PreviewPanel = ({ config }: PreviewPanelProps) => {
             initialMessage={config.content.welcomeMessage}
             isOpen={true}
             darkMode={config.appearance.darkMode}
+            messageStyle={config.messages?.messageStyle || "bubble"}
+            showTypingIndicator={config.messages?.showTypingIndicator}
+            showReadReceipts={config.messages?.showReadReceipts}
+            enableFeedback={config.messages?.enableFeedback}
+            feedbackType={config.messages?.feedbackType}
+            allowAttachments={config.messages?.allowAttachments}
+            prebuiltMessages={
+              config.messages?.enablePrebuiltMessages
+                ? config.messages?.prebuiltMessages
+                : []
+            }
+            width={config.appearance.width}
+            height={config.appearance.height}
+            borderRadius={config.appearance.borderRadius}
+            fontFamily={config.appearance.fontFamily}
           />
         </div>
       </div>

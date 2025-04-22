@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { PrebuiltMessages } from "./";
 
 interface MessageTabProps {
   config: any;
@@ -366,14 +367,13 @@ const MessageTab = ({
           {config.messages.enablePrebuiltMessages && (
             <div className="space-y-4 pl-6 border-l-2 border-muted">
               <p className="text-sm text-muted-foreground">
-                Configure prebuilt messages that users can quickly select
+                Configure prebuilt messages that will be automatically sent
+                during conversations
               </p>
 
               <PrebuiltMessages
-                messages={config.messages.prebuiltMessages || []}
-                onChange={(messages) =>
-                  handleConfigChange("messages", "prebuiltMessages", messages)
-                }
+                config={config}
+                handleConfigChange={handleConfigChange}
               />
             </div>
           )}

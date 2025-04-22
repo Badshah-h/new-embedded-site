@@ -7,3 +7,4 @@ export { default as SurveyTab } from "./SurveyTab";
 export { default as TemplatePresets } from "./TemplatePresets";
 export { default as EmbedCodeSection } from "./EmbedCodeSection";
 export { default as PreviewPanel } from "./PreviewPanel";
+export { default as PrebuiltMessages } from "./PrebuiltMessages";
